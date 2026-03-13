@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShipCalc - Shipping Cost from China Calculator | Free Freight Estimator</title>
+<meta name="description" content="Instantly estimate shipping costs from China to USA, UK, Europe, Japan and more. Compare sea freight, air freight, and express courier rates. Free, no signup.">
+<meta name="keywords" content="shipping cost from China, China shipping calculator, freight cost estimator, sea freight China to US, air freight China calculator, DHL shipping from China, international shipping cost">
+<style>
+:root {
+  --bg: #0f0f17;
+  --surface: #181824;
+  --surface2: #1e1e2e;
+  --border: #2a2a3e;
+  --text: #e0e0ec;
+  --text2: #7a7a96;
+  --accent: #0ea5e9;
+  --accent2: #38bdf8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --orange: #f97316;
+  --purple: #6366f1;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header-sub { font-size: 12px; color: var(--text2); }
+.header-right { display: flex; gap: 10px; }
+.header-right a {
+  font-size: 11px; color: var(--purple); text-decoration: none;
+  padding: 5px 12px; border: 1px solid rgba(99,102,241,0.3); border-radius: 5px;
+}
+.header-right a:hover { background: rgba(99,102,241,0.1); }
+.main { max-width: 1100px; margin: 0 auto; padding: 24px 32px; }
+
+/* Input Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.field label {
+  display: block; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text2); margin-bottom: 4px;
+}
+.field select, .field input {
+  width: 100%; padding: 9px 11px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 13px;
+}
+.field select:focus, .field input:focus { outline: none; border-color: var(--accent); }
+.field-row { display: flex; gap: 10px; }
+.field-row .field { flex: 1; }
+.btn {
+  padding: 11px 28px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 6px; }
+.btn-primary:hover { background: #0284c7; }
+
+/* Results */
+.results { display: none; }
+.results.visible { display: block; }
+.route-header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.route-info { font-size: 14px; }
+.route-info strong { color: var(--accent2); }
+.route-info .distance { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.shipment-info { font-size: 12px; color: var(--text2); text-align: right; }
+
+/* Shipping Options */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.option-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.option-card:hover { border-color: var(--accent); }
+.option-card.cheapest { border-color: var(--green); }
+.option-card.fastest { border-color: var(--orange); }
+.option-badge {
+  position: absolute; top: -8px; right: 12px;
+  padding: 2px 10px; border-radius: 10px;
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.badge-cheapest { background: var(--green); color: #000; }
+.badge-fastest { background: var(--orange); color: #000; }
+.option-icon { font-size: 24px; margin-bottom: 6px; }
+.option-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.option-carrier { font-size: 11px; color: var(--text2); margin-bottom: 12px; }
+.option-price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.option-price-unit { font-size: 11px; color: var(--text2); margin-bottom: 12px; }
+.option-details { font-size: 12px; color: var(--text2); }
+.option-detail { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.option-detail:last-child { border: none; }
+.detail-label { color: var(--text2); }
+.detail-value { color: var(--text); font-weight: 500; }
+
+/* Comparison Table */
+.comparison {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.comparison h2 {
+  font-size: 12px; color: var(--text2); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 12px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  text-align: left; padding: 8px 10px; background: var(--surface2);
+  color: var(--text2); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+tr:hover td { background: rgba(14,165,233,0.04); }
+.highlight-green { color: var(--green); font-weight: 600; }
+.highlight-orange { color: var(--orange); font-weight: 600; }
+
+/* Tips */
+.tips {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.tips h2 {
+  font-size: 12px; color: var(--text2); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 10px;
+}
+.tip {
+  font-size: 12px; color: var(--text); padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.tip:last-child { border: none; }
+.tip strong { color: var(--accent2); }
+
+/* Cross-sell */
+.cross-sell {
+  text-align: center; margin-top: 32px; padding: 24px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+}
+.cross-sell h3 { font-size: 15px; margin-bottom: 6px; }
+.cross-sell p { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
+.cross-sell-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.cross-sell-link {
+  padding: 8px 20px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  text-decoration: none; color: white;
+}
+.link-purple { background: var(--purple); }
+.link-blue { background: var(--accent); }
+
+/* Footer & Disclaimer */
+.footer {
+  text-align: center; padding: 24px; font-size: 11px; color: var(--text2);
+  border-top: 1px solid var(--border); margin-top: 40px;
+}
+.footer a { color: var(--accent2); text-decoration: none; }
+.disclaimer {
+  font-size: 10px; color: var(--text2); text-align: center;
+  padding: 8px; background: rgba(234,179,8,0.05);
+  border: 1px solid rgba(234,179,8,0.15); border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .main { padding: 16px; }
+  .header { padding: 12px 16px; flex-direction: column; gap: 8px; }
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .options-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>ShipCalc</h1>
+    <div class="header-sub">Shipping Cost from China — Instant Estimates</div>
+  </div>
+  <div class="header-right">
+    <a href="#">SourceCalc Extension</a>
+    <a href="#">BulkCalc Tool</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="form-grid">
+    <div class="field">
+      <label>Origin (China)</label>
+      <select id="origin">
+        <option value="shenzhen">Shenzhen / Guangdong</option>
+        <option value="yiwu">Yiwu / Zhejiang</option>
+        <option value="shanghai">Shanghai</option>
+        <option value="ningbo">Ningbo</option>
+        <option value="qingdao">Qingdao</option>
+        <option value="xiamen">Xiamen</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Destination Country</label>
+      <select id="destination">
+        <option value="US">United States</option>
+        <option value="UK">United Kingdom</option>
+        <option value="DE">Germany</option>
+        <option value="FR">France</option>
+        <option value="JP">Japan</option>
+        <option value="AU">Australia</option>
+        <option value="CA">Canada</option>
+        <option value="AE">UAE</option>
+        <option value="SA">Saudi Arabia</option>
+        <option value="SG">Singapore</option>
+        <option value="MY">Malaysia</option>
+        <option value="TH">Thailand</option>
+        <option value="KR">South Korea</option>
+        <option value="BR">Brazil</option>
+        <option value="MX">Mexico</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Total Weight</label>
+      <div class="field-row">
+        <div class="field">
+          <input type="number" id="weight" value="20" min="0.1" step="0.1" placeholder="20">
+        </div>
+        <div class="field">
+          <select id="weightUnit">
+            <option value="kg">kg</option>
+            <option value="lb">lb</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Dimensions (L x W x H cm)</label>
+      <div style="display:flex;gap:4px;">
+        <input type="number" id="dimL" value="40" min="1" style="width:33%;" placeholder="L">
+        <input type="number" id="dimW" value="30" min="1" style="width:33%;" placeholder="W">
+        <input type="number" id="dimH" value="30" min="1" style="width:33%;" placeholder="H">
+      </div>
+    </div>
+    <div class="field">
+      <label>Number of Cartons</label>
+      <input type="number" id="cartons" value="1" min="1">
+    </div>
+    <div class="field">
+      <label>Goods Type</label>
+      <select id="goodsType">
+        <option value="general">General Merchandise</option>
+        <option value="electronics">Electronics</option>
+        <option value="textiles">Textiles / Clothing</option>
+        <option value="toys">Toys</option>
+        <option value="cosmetics">Cosmetics / Beauty</option>
+        <option value="food">Food / Supplements</option>
+        <option value="hazmat">Contains Battery / Liquid</option>
+      </select>
+    </div>
+    <div class="field" style="grid-column: 1 / -1;">
+      <button class="btn btn-primary" onclick="calculate()">Estimate Shipping Cost</button>
+    </div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="disclaimer">
+      These are estimated rates for planning purposes. Actual rates vary by carrier, season, and specific goods. Get formal quotes from freight forwarders for exact pricing.
+    </div>
+    <div class="route-header" id="routeHeader"></div>
+    <div class="options-grid" id="optionsGrid"></div>
+    <div class="comparison">
+      <h2>Full Comparison</h2>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead id="compHead"></thead>
+          <tbody id="compBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tips" id="tips"></div>
+  </div>
+
+  <div class="cross-sell">
+    <h3>Calculate the full profit chain?</h3>
+    <p>ShipCalc estimates shipping. SourceCalc & BulkCalc add sourcing cost, customs, platform fees, and profit margin.</p>
+    <div class="cross-sell-links">
+      <a href="#" class="cross-sell-link link-purple">SourceCalc — 1688 Profit Calculator</a>
+      <a href="#" class="cross-sell-link link-blue">BulkCalc — Batch Profit Calculator</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  ShipCalc v1.0 | Free tool by <a href="#">AIHM</a> | No data collection — all calculations run in your browser
+</div>
+
+<script>
+const RATES = {
+  sea_fcl: {
+    name: 'Sea Freight (FCL)', icon: '🚢', carrier: '20ft/40ft Container', transitDays: {},
+    perCBM: {
+      US: { shenzhen: 45, yiwu: 48, shanghai: 40, ningbo: 38, qingdao: 42, xiamen: 44 },
+      UK: { shenzhen: 55, yiwu: 58, shanghai: 52, ningbo: 50, qingdao: 53, xiamen: 55 },
+      DE: { shenzhen: 50, yiwu: 53, shanghai: 48, ningbo: 46, qingdao: 49, xiamen: 51 },
+      FR: { shenzhen: 52, yiwu: 55, shanghai: 49, ningbo: 48, qingdao: 51, xiamen: 53 },
+      JP: { shenzhen: 25, yiwu: 28, shanghai: 22, ningbo: 22, qingdao: 24, xiamen: 26 },
+      AU: { shenzhen: 48, yiwu: 52, shanghai: 45, ningbo: 44, qingdao: 47, xiamen: 49 },
+      CA: { shenzhen: 50, yiwu: 53, shanghai: 46, ningbo: 44, qingdao: 48, xiamen: 50 },
+      AE: { shenzhen: 30, yiwu: 33, shanghai: 28, ningbo: 27, qingdao: 30, xiamen: 31 },
+      SA: { shenzhen: 35, yiwu: 38, shanghai: 32, ningbo: 31, qingdao: 34, xiamen: 36 },
+      SG: { shenzhen: 18, yiwu: 22, shanghai: 20, ningbo: 19, qingdao: 22, xiamen: 20 },
+      MY: { shenzhen: 20, yiwu: 24, shanghai: 22, ningbo: 21, qingdao: 24, xiamen: 22 },
+      TH: { shenzhen: 22, yiwu: 26, shanghai: 24, ningbo: 23, qingdao: 26, xiamen: 24 },
+      KR: { shenzhen: 20, yiwu: 24, shanghai: 18, ningbo: 18, qingdao: 16, xiamen: 20 },
+      BR: { shenzhen: 65, yiwu: 68, shanghai: 60, ningbo: 58, qingdao: 62, xiamen: 64 },
+      MX: { shenzhen: 55, yiwu: 58, shanghai: 50, ningbo: 48, qingdao: 52, xiamen: 54 }
+    }
+  },
+  sea_lcl: {
+    name: 'Sea Freight (LCL)', icon: '📦🚢', carrier: 'Shared Container',
+    perCBM: {
+      US: { shenzhen: 65, yiwu: 68, shanghai: 60, ningbo: 58, qingdao: 62, xiamen: 64 },
+      UK: { shenzhen: 75, yiwu: 78, shanghai: 70, ningbo: 68, qingdao: 72, xiamen: 74 },
+      DE: { shenzhen: 72, yiwu: 75, shanghai: 68, ningbo: 66, qingdao: 70, xiamen: 72 },
+      FR: { shenzhen: 74, yiwu: 77, shanghai: 70, ningbo: 68, qingdao: 72, xiamen: 74 },
+      JP: { shenzhen: 40, yiwu: 44, shanghai: 36, ningbo: 35, qingdao: 38, xiamen: 40 },
+      AU: { shenzhen: 70, yiwu: 74, shanghai: 66, ningbo: 64, qingdao: 68, xiamen: 70 },
+      CA: { shenzhen: 70, yiwu: 73, shanghai: 65, ningbo: 63, qingdao: 67, xiamen: 69 },
+      AE: { shenzhen: 45, yiwu: 48, shanghai: 42, ningbo: 40, qingdao: 44, xiamen: 45 },
+      SA: { shenzhen: 50, yiwu: 53, shanghai: 48, ningbo: 46, qingdao: 50, xiamen: 52 },
+      SG: { shenzhen: 30, yiwu: 34, shanghai: 32, ningbo: 30, qingdao: 34, xiamen: 32 },
+      MY: { shenzhen: 32, yiwu: 36, shanghai: 34, ningbo: 32, qingdao: 36, xiamen: 34 },
+      TH: { shenzhen: 35, yiwu: 38, shanghai: 36, ningbo: 34, qingdao: 38, xiamen: 36 },
+      KR: { shenzhen: 32, yiwu: 36, shanghai: 28, ningbo: 28, qingdao: 26, xiamen: 30 },
+      BR: { shenzhen: 90, yiwu: 94, shanghai: 85, ningbo: 82, qingdao: 86, xiamen: 88 },
+      MX: { shenzhen: 78, yiwu: 82, shanghai: 72, ningbo: 70, qingdao: 74, xiamen: 76 }
+    }
+  },
+  air_standard: {
+    name: 'Air Freight (Standard)', icon: '✈️', carrier: 'Airline Cargo',
+    perKg: {
+      US: { shenzhen: 5.5, yiwu: 6.0, shanghai: 5.0, ningbo: 5.5, qingdao: 5.8, xiamen: 5.5 },
+      UK: { shenzhen: 6.0, yiwu: 6.5, shanghai: 5.5, ningbo: 6.0, qingdao: 6.2, xiamen: 6.0 },
+      DE: { shenzhen: 5.8, yiwu: 6.2, shanghai: 5.3, ningbo: 5.8, qingdao: 6.0, xiamen: 5.8 },
+      FR: { shenzhen: 6.0, yiwu: 6.4, shanghai: 5.5, ningbo: 6.0, qingdao: 6.2, xiamen: 6.0 },
+      JP: { shenzhen: 4.0, yiwu: 4.5, shanghai: 3.5, ningbo: 4.0, qingdao: 4.2, xiamen: 4.0 },
+      AU: { shenzhen: 6.5, yiwu: 7.0, shanghai: 6.0, ningbo: 6.5, qingdao: 6.8, xiamen: 6.5 },
+      CA: { shenzhen: 5.8, yiwu: 6.2, shanghai: 5.2, ningbo: 5.8, qingdao: 6.0, xiamen: 5.8 },
+      AE: { shenzhen: 4.5, yiwu: 5.0, shanghai: 4.0, ningbo: 4.5, qingdao: 4.8, xiamen: 4.5 },
+      SA: { shenzhen: 5.0, yiwu: 5.5, shanghai: 4.5, ningbo: 5.0, qingdao: 5.2, xiamen: 5.0 },
+      SG: { shenzhen: 3.5, yiwu: 4.0, shanghai: 3.2, ningbo: 3.5, qingdao: 3.8, xiamen: 3.5 },
+      MY: { shenzhen: 3.8, yiwu: 4.2, shanghai: 3.5, ningbo: 3.8, qingdao: 4.0, xiamen: 3.8 },
+      TH: { shenzhen: 3.5, yiwu: 4.0, shanghai: 3.3, ningbo: 3.5, qingdao: 3.8, xiamen: 3.5 },
+      KR: { shenzhen: 3.5, yiwu: 4.0, shanghai: 3.0, ningbo: 3.2, qingdao: 3.0, xiamen: 3.3 },
+      BR: { shenzhen: 8.0, yiwu: 8.5, shanghai: 7.5, ningbo: 8.0, qingdao: 8.2, xiamen: 8.0 },
+      MX: { shenzhen: 7.0, yiwu: 7.5, shanghai: 6.5, ningbo: 7.0, qingdao: 7.2, xiamen: 7.0 }
+    }
+  },
+  air_express: {
+    name: 'Express Courier', icon: '📦✈️', carrier: 'DHL / FedEx / UPS',
+    perKg: {
+      US: { shenzhen: 9.0, yiwu: 9.5, shanghai: 8.5, ningbo: 9.0, qingdao: 9.2, xiamen: 9.0 },
+      UK: { shenzhen: 10.0, yiwu: 10.5, shanghai: 9.5, ningbo: 10.0, qingdao: 10.2, xiamen: 10.0 },
+      DE: { shenzhen: 9.5, yiwu: 10.0, shanghai: 9.0, ningbo: 9.5, qingdao: 9.8, xiamen: 9.5 },
+      FR: { shenzhen: 10.0, yiwu: 10.5, shanghai: 9.5, ningbo: 10.0, qingdao: 10.2, xiamen: 10.0 },
+      JP: { shenzhen: 7.0, yiwu: 7.5, shanghai: 6.5, ningbo: 7.0, qingdao: 7.2, xiamen: 7.0 },
+      AU: { shenzhen: 10.5, yiwu: 11.0, shanghai: 10.0, ningbo: 10.5, qingdao: 10.8, xiamen: 10.5 },
+      CA: { shenzhen: 9.5, yiwu: 10.0, shanghai: 9.0, ningbo: 9.5, qingdao: 9.8, xiamen: 9.5 },
+      AE: { shenzhen: 7.5, yiwu: 8.0, shanghai: 7.0, ningbo: 7.5, qingdao: 7.8, xiamen: 7.5 },
+      SA: { shenzhen: 8.0, yiwu: 8.5, shanghai: 7.5, ningbo: 8.0, qingdao: 8.2, xiamen: 8.0 },
+      SG: { shenzhen: 6.0, yiwu: 6.5, shanghai: 5.5, ningbo: 6.0, qingdao: 6.3, xiamen: 6.0 },
+      MY: { shenzhen: 6.5, yiwu: 7.0, shanghai: 6.0, ningbo: 6.5, qingdao: 6.8, xiamen: 6.5 },
+      TH: { shenzhen: 6.0, yiwu: 6.5, shanghai: 5.8, ningbo: 6.0, qingdao: 6.3, xiamen: 6.0 },
+      KR: { shenzhen: 6.0, yiwu: 6.5, shanghai: 5.5, ningbo: 5.8, qingdao: 5.5, xiamen: 5.8 },
+      BR: { shenzhen: 14.0, yiwu: 14.5, shanghai: 13.0, ningbo: 13.5, qingdao: 14.0, xiamen: 13.5 },
+      MX: { shenzhen: 12.0, yiwu: 12.5, shanghai: 11.0, ningbo: 11.5, qingdao: 12.0, xiamen: 11.5 }
+    }
+  },
+  rail: {
+    name: 'Rail Freight', icon: '🚂', carrier: 'China-Europe Express',
+    perKg: {
+      UK: { shenzhen: 4.5, yiwu: 4.0, shanghai: 4.2, ningbo: 4.3, qingdao: 4.0, xiamen: 4.5 },
+      DE: { shenzhen: 4.0, yiwu: 3.5, shanghai: 3.8, ningbo: 3.9, qingdao: 3.6, xiamen: 4.0 },
+      FR: { shenzhen: 4.2, yiwu: 3.8, shanghai: 4.0, ningbo: 4.1, qingdao: 3.8, xiamen: 4.2 }
+    }
+  }
+};
+
+const TRANSIT = {
+  sea_fcl:      { US: [25,35], UK: [30,40], DE: [28,38], FR: [28,38], JP: [7,12], AU: [18,25], CA: [22,32], AE: [15,22], SA: [18,25], SG: [5,8], MY: [5,8], TH: [5,8], KR: [3,5], BR: [35,45], MX: [25,35] },
+  sea_lcl:      { US: [30,45], UK: [35,50], DE: [33,48], FR: [33,48], JP: [10,18], AU: [22,32], CA: [28,40], AE: [18,28], SA: [22,32], SG: [7,12], MY: [7,12], TH: [7,12], KR: [5,8], BR: [40,55], MX: [30,42] },
+  air_standard: { US: [5,8],   UK: [5,8],   DE: [5,8],   FR: [5,8],   JP: [3,5],  AU: [5,8],  CA: [5,8],  AE: [3,5],  SA: [3,5],  SG: [2,4], MY: [2,4], TH: [2,4], KR: [2,3], BR: [7,12], MX: [5,8] },
+  air_express:  { US: [3,5],   UK: [3,5],   DE: [3,5],   FR: [3,5],   JP: [2,3],  AU: [3,5],  CA: [3,5],  AE: [2,4],  SA: [2,4],  SG: [1,3], MY: [1,3], TH: [1,3], KR: [1,2], BR: [5,8],  MX: [3,5] },
+  rail:         { UK: [18,25], DE: [16,22], FR: [17,24] }
+};
+
+const COUNTRY_NAMES = {
+  US:'United States',UK:'United Kingdom',DE:'Germany',FR:'France',JP:'Japan',AU:'Australia',
+  CA:'Canada',AE:'UAE',SA:'Saudi Arabia',SG:'Singapore',MY:'Malaysia',TH:'Thailand',
+  KR:'South Korea',BR:'Brazil',MX:'Mexico'
+};
+const ORIGIN_NAMES = {
+  shenzhen:'Shenzhen',yiwu:'Yiwu',shanghai:'Shanghai',ningbo:'Ningbo',qingdao:'Qingdao',xiamen:'Xiamen'
+};
+
+const SURCHARGES = {
+  general: 1.0, electronics: 1.05, textiles: 1.0, toys: 1.0,
+  cosmetics: 1.1, food: 1.15, hazmat: 1.3
+};
+
+function calculate() {
+  const origin = document.getElementById('origin').value;
+  const dest = document.getElementById('destination').value;
+  let weight = parseFloat(document.getElementById('weight').value) || 20;
+  const weightUnit = document.getElementById('weightUnit').value;
+  const dimL = parseFloat(document.getElementById('dimL').value) || 40;
+  const dimW = parseFloat(document.getElementById('dimW').value) || 30;
+  const dimH = parseFloat(document.getElementById('dimH').value) || 30;
+  const cartons = parseInt(document.getElementById('cartons').value) || 1;
+  const goodsType = document.getElementById('goodsType').value;
+
+  if (weightUnit === 'lb') weight = weight * 0.4536;
+
+  const totalWeight = weight * cartons;
+  const cbmPerCarton = (dimL * dimW * dimH) / 1000000;
+  const totalCBM = cbmPerCarton * cartons;
+  const volWeightPerCarton = (dimL * dimW * dimH) / 5000;
+  const totalVolWeight = volWeightPerCarton * cartons;
+  const chargeableWeight = Math.max(totalWeight, totalVolWeight);
+  const surcharge = SURCHARGES[goodsType];
+
+  const options = [];
+
+  if (RATES.sea_fcl.perCBM[dest]) {
+    const rateCBM = RATES.sea_fcl.perCBM[dest][origin] * surcharge;
+    const cost = rateCBM * Math.max(totalCBM, 1);
+    options.push({ id: 'sea_fcl', name: RATES.sea_fcl.name, icon: RATES.sea_fcl.icon, carrier: RATES.sea_fcl.carrier, cost, costPerKg: cost / totalWeight, transit: TRANSIT.sea_fcl[dest], rateInfo: `$${rateCBM.toFixed(0)}/CBM x ${Math.max(totalCBM,1).toFixed(2)} CBM` });
+  }
+  if (RATES.sea_lcl.perCBM[dest]) {
+    const rateCBM = RATES.sea_lcl.perCBM[dest][origin] * surcharge;
+    const cost = rateCBM * Math.max(totalCBM, 0.5);
+    options.push({ id: 'sea_lcl', name: RATES.sea_lcl.name, icon: RATES.sea_lcl.icon, carrier: RATES.sea_lcl.carrier, cost, costPerKg: cost / totalWeight, transit: TRANSIT.sea_lcl[dest], rateInfo: `$${rateCBM.toFixed(0)}/CBM x ${Math.max(totalCBM,0.5).toFixed(2)} CBM` });
+  }
+  if (RATES.air_standard.perKg[dest]) {
+    const rateKg = RATES.air_standard.perKg[dest][origin] * surcharge;
+    const cost = rateKg * chargeableWeight;
+    options.push({ id: 'air_standard', name: RATES.air_standard.name, icon: RATES.air_standard.icon, carrier: RATES.air_standard.carrier, cost, costPerKg: rateKg, transit: TRANSIT.air_standard[dest], rateInfo: `$${rateKg.toFixed(2)}/kg x ${chargeableWeight.toFixed(1)} kg` });
+  }
+  if (RATES.air_express.perKg[dest]) {
+    const rateKg = RATES.air_express.perKg[dest][origin] * surcharge;
+    const cost = rateKg * chargeableWeight;
+    options.push({ id: 'air_express', name: RATES.air_express.name, icon: RATES.air_express.icon, carrier: RATES.air_express.carrier, cost, costPerKg: rateKg, transit: TRANSIT.air_express[dest], rateInfo: `$${rateKg.toFixed(2)}/kg x ${chargeableWeight.toFixed(1)} kg` });
+  }
+  if (RATES.rail.perKg[dest]) {
+    const rateKg = RATES.rail.perKg[dest][origin] * surcharge;
+    const cost = rateKg * chargeableWeight;
+    options.push({ id: 'rail', name: RATES.rail.name, icon: RATES.rail.icon, carrier: RATES.rail.carrier, cost, costPerKg: rateKg, transit: TRANSIT.rail[dest], rateInfo: `$${rateKg.toFixed(2)}/kg x ${chargeableWeight.toFixed(1)} kg` });
+  }
+
+  const cheapest = options.reduce((a, b) => a.cost < b.cost ? a : b);
+  const fastest = options.reduce((a, b) => a.transit[0] < b.transit[0] ? a : b);
+  renderResults(origin, dest, totalWeight, totalCBM, chargeableWeight, cartons, goodsType, options, cheapest, fastest);
+}
+
+function renderResults(origin, dest, totalWeight, totalCBM, chargeableWeight, cartons, goodsType, options, cheapest, fastest) {
+  document.getElementById('results').classList.add('visible');
+
+  document.getElementById('routeHeader').innerHTML = `
+    <div class="route-info">
+      <strong>${ORIGIN_NAMES[origin]}, China</strong> → <strong>${COUNTRY_NAMES[dest]}</strong>
+      <div class="distance">${options.length} shipping options available</div>
+    </div>
+    <div class="shipment-info">
+      ${cartons} carton${cartons>1?'s':''} | ${totalWeight.toFixed(1)} kg actual | ${totalCBM.toFixed(3)} CBM<br>
+      Chargeable: ${chargeableWeight.toFixed(1)} kg | Type: ${goodsType}
+    </div>`;
+
+  document.getElementById('optionsGrid').innerHTML = options.map(opt => {
+    const isCheapest = opt.id === cheapest.id;
+    const isFastest = opt.id === fastest.id;
+    let cardClass = 'option-card';
+    let badge = '';
+    if (isCheapest && isFastest) { cardClass += ' cheapest'; badge = '<div class="option-badge badge-cheapest">Best Value</div>'; }
+    else if (isCheapest) { cardClass += ' cheapest'; badge = '<div class="option-badge badge-cheapest">Cheapest</div>'; }
+    else if (isFastest) { cardClass += ' fastest'; badge = '<div class="option-badge badge-fastest">Fastest</div>'; }
+    return `<div class="${cardClass}">${badge}
+      <div class="option-icon">${opt.icon}</div>
+      <div class="option-name">${opt.name}</div>
+      <div class="option-carrier">${opt.carrier}</div>
+      <div class="option-price" style="color:${isCheapest?'var(--green)':'var(--text)'}">$${opt.cost.toFixed(0)}</div>
+      <div class="option-price-unit">${opt.rateInfo}</div>
+      <div class="option-details">
+        <div class="option-detail"><span class="detail-label">Transit Time</span><span class="detail-value">${opt.transit[0]}-${opt.transit[1]} days</span></div>
+        <div class="option-detail"><span class="detail-label">Cost per kg</span><span class="detail-value">$${opt.costPerKg.toFixed(2)}</span></div>
+      </div></div>`;
+  }).join('');
+
+  document.getElementById('compHead').innerHTML = `<tr><th>Method</th><th>Total Cost</th><th>Per kg</th><th>Transit</th><th>Speed Rank</th><th>Cost Rank</th></tr>`;
+  const byPrice = [...options].sort((a,b) => a.cost - b.cost);
+  const bySpeed = [...options].sort((a,b) => a.transit[0] - b.transit[0]);
+  document.getElementById('compBody').innerHTML = options.map(opt => {
+    const priceRank = byPrice.indexOf(opt) + 1;
+    const speedRank = bySpeed.indexOf(opt) + 1;
+    return `<tr>
+      <td>${opt.icon} ${opt.name}</td>
+      <td class="${priceRank===1?'highlight-green':''}">$${opt.cost.toFixed(0)}</td>
+      <td>$${opt.costPerKg.toFixed(2)}</td>
+      <td class="${speedRank===1?'highlight-orange':''}">${opt.transit[0]}-${opt.transit[1]}d</td>
+      <td>${speedRank===1?'<span class="highlight-orange">#1</span>':'#'+speedRank}</td>
+      <td>${priceRank===1?'<span class="highlight-green">#1</span>':'#'+priceRank}</td></tr>`;
+  }).join('');
+
+  const savings = options[options.length-1].cost - cheapest.cost;
+  const timeDiff = options.reduce((max,o) => Math.max(max, o.transit[1]), 0) - fastest.transit[0];
+  document.getElementById('tips').innerHTML = `
+    <h2>Shipping Tips for ${COUNTRY_NAMES[dest]}</h2>
+    <div class="tip"><strong>Cheapest option saves you $${savings.toFixed(0)}</strong> compared to the most expensive method.</div>
+    <div class="tip"><strong>Fastest option saves ${timeDiff} days</strong> transit time vs the slowest.</div>
+    ${totalWeight > 100 ? '<div class="tip"><strong>FCL recommended</strong> for shipments over 100kg — better per-unit economics than LCL.</div>' : '<div class="tip"><strong>LCL is fine</strong> for smaller shipments under 100kg. Consider consolidating orders to fill a container for better rates.</div>'}
+    ${goodsType === 'hazmat' ? '<div class="tip"><strong>Battery/liquid surcharge applied</strong> (30%). Some carriers may refuse hazmat goods — confirm with your freight forwarder.</div>' : ''}
+    ${dest === 'US' ? '<div class="tip"><strong>Section 301 tariffs</strong> may apply to goods from China. Budget 7.5-25% duty on top of shipping.</div>' : ''}
+    ${['UK','DE','FR'].includes(dest) ? '<div class="tip"><strong>Rail freight available!</strong> China-Europe rail is a good middle ground between sea (cheap but slow) and air (fast but expensive).</div>' : ''}
+    <div class="tip"><strong>Pro tip:</strong> Get quotes from 3+ freight forwarders. Rates vary significantly. Yiwu and Ningbo often have the best rates.</div>`;
+
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
