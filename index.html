@@ -335,6 +335,9 @@ tr:hover td { background: rgba(14,165,233,0.04); }
     <div class="disclaimer">
       These are estimated rates for planning purposes. Actual rates vary by carrier, season, and specific goods. Get formal quotes from freight forwarders for exact pricing.
     </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px;">
+      <button class="btn" style="padding:6px 14px;font-size:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:6px;cursor:pointer;" onclick="shareShipping()">Share Results</button>
+    </div>
     <div class="route-header" id="routeHeader"></div>
     <div class="options-grid" id="optionsGrid"></div>
     <div class="comparison">
@@ -592,6 +595,36 @@ function renderResults(origin, dest, totalWeight, totalCBM, chargeableWeight, ca
     <div class="tip"><strong>Pro tip:</strong> Get quotes from 3+ freight forwarders. Rates vary significantly. Yiwu and Ningbo often have the best rates.</div>`;
 
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function shareShipping() {
+  const header = document.getElementById('routeHeader');
+  if (!header || !header.textContent.trim()) return;
+  const route = header.querySelector('.route-info strong');
+  const dest = header.querySelectorAll('.route-info strong')[1];
+  const cards = document.querySelectorAll('.option-card');
+  let cheapest = '', fastest = '';
+  cards.forEach(c => {
+    const badge = c.querySelector('.option-badge');
+    const name = c.querySelector('.option-name');
+    const price = c.querySelector('.option-price');
+    if (badge && badge.textContent.includes('Cheapest') && name && price) cheapest = `${name.textContent}: ${price.textContent}`;
+    if (badge && badge.textContent.includes('Fastest') && name && price) fastest = `${name.textContent}: ${price.textContent}`;
+    if (badge && badge.textContent.includes('Best Value') && name && price) { cheapest = `${name.textContent}: ${price.textContent}`; fastest = cheapest; }
+  });
+  const text = `Shipping from China to ${dest ? dest.textContent : '?'}:\n` +
+    (cheapest ? `Cheapest: ${cheapest}\n` : '') +
+    (fastest && fastest !== cheapest ? `Fastest: ${fastest}\n` : '') +
+    `\nFree calculator: https://itsukiken1.github.io/shipcalc/`;
+  if (navigator.share) {
+    navigator.share({ title: 'ShipCalc Results', text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Share Results', 1500);
+    });
+  }
 }
 </script>
 
