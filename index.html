@@ -594,6 +594,54 @@ function renderResults(origin, dest, totalWeight, totalCBM, chargeableWeight, ca
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
+
+<section style="max-width:800px;margin:60px auto;padding:0 20px;color:var(--text)">
+<h2 style="font-size:24px;margin-bottom:24px;color:var(--accent2)">Frequently Asked Questions</h2>
+
+<details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px">
+<summary style="cursor:pointer;font-weight:600;font-size:15px">How much does shipping from China cost?</summary>
+<p style="margin-top:12px;color:var(--text2);font-size:14px;line-height:1.7">Shipping costs from China vary by method: Sea freight (LCL) costs $8-15 per CBM with 30-45 day transit. Air freight costs $4-8 per kg with 5-10 day transit. Express courier (DHL/FedEx/UPS) costs $8-15 per kg with 3-5 day delivery. Rail freight to Europe costs $3-5 per kg with 15-20 day transit. Use ShipCalc to get instant estimates for your specific shipment.</p>
+</details>
+
+<details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px">
+<summary style="cursor:pointer;font-weight:600;font-size:15px">What is the cheapest way to ship from China?</summary>
+<p style="margin-top:12px;color:var(--text2);font-size:14px;line-height:1.7">Sea freight (ocean shipping) is the cheapest method for most shipments over 50 kg. For a full container (FCL), rates can be as low as $3-6 per CBM. For smaller shipments, LCL (less than container load) at $8-15 per CBM is still significantly cheaper than air freight. The tradeoff is speed — sea freight takes 25-45 days vs 5-10 days for air.</p>
+</details>
+
+<details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px">
+<summary style="cursor:pointer;font-weight:600;font-size:15px">Sea freight vs air freight: which should I use?</summary>
+<p style="margin-top:12px;color:var(--text2);font-size:14px;line-height:1.7">Use sea freight for large, heavy, or non-urgent shipments — it's 5-10x cheaper per kg. Use air freight for lightweight items, time-sensitive inventory, or test batches under 100 kg. A common strategy: ship your first batch by air to start selling fast, then switch to sea freight for restocks once you know the product sells.</p>
+</details>
+
+<details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px">
+<summary style="cursor:pointer;font-weight:600;font-size:15px">What countries does ShipCalc support?</summary>
+<p style="margin-top:12px;color:var(--text2);font-size:14px;line-height:1.7">ShipCalc estimates shipping costs from China to: USA, UK, Germany, France, Japan, Australia, Canada, UAE, Saudi Arabia, South Korea, Singapore, Netherlands, Spain, Italy, and Brazil. Each destination has specific rate data for sea freight, air freight, express courier, and (where available) rail freight.</p>
+</details>
+
+<details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px">
+<summary style="cursor:pointer;font-weight:600;font-size:15px">Is ShipCalc free?</summary>
+<p style="margin-top:12px;color:var(--text2);font-size:14px;line-height:1.7">Yes, ShipCalc is completely free with no signup. It provides instant shipping cost estimates based on industry-standard freight rates. All calculations run in your browser — no data is sent to any server. For exact quotes, always confirm with your freight forwarder, but ShipCalc gives you a solid baseline for budgeting.</p>
+</details>
+
+<p style="margin-top:32px;text-align:center;font-size:13px;color:var(--text2)">
+Need to calculate profit margins? Try <a href="https://itsukiken1.github.io/bulkcalc/" style="color:var(--accent2)">BulkCalc</a> for batch profit analysis with platform fees.
+Sourcing from 1688? <a href="https://itsukiken1.github.io/sourcecalc/" style="color:var(--accent2)">SourceCalc</a> calculates profit directly on product pages.
+</p>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does shipping from China cost?", "acceptedAnswer": {"@type": "Answer", "text": "Sea freight costs $8-15/CBM (30-45 days). Air freight costs $4-8/kg (5-10 days). Express courier costs $8-15/kg (3-5 days). Rail freight to Europe costs $3-5/kg (15-20 days)."}},
+    {"@type": "Question", "name": "What is the cheapest way to ship from China?", "acceptedAnswer": {"@type": "Answer", "text": "Sea freight is cheapest for shipments over 50 kg, at $3-6/CBM for FCL or $8-15/CBM for LCL. The tradeoff is 25-45 day transit time."}},
+    {"@type": "Question", "name": "Sea freight vs air freight: which should I use?", "acceptedAnswer": {"@type": "Answer", "text": "Sea freight for large, heavy, or non-urgent shipments. Air freight for lightweight, time-sensitive, or test batches under 100 kg. A common strategy is air for first batch, sea for restocks."}},
+    {"@type": "Question", "name": "What countries does ShipCalc support?", "acceptedAnswer": {"@type": "Answer", "text": "USA, UK, Germany, France, Japan, Australia, Canada, UAE, Saudi Arabia, South Korea, Singapore, Netherlands, Spain, Italy, and Brazil."}},
+    {"@type": "Question", "name": "Is ShipCalc free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, completely free with no signup. All calculations run in your browser with no data sent to any server."}}
+  ]
+}
+</script>
 <script data-goatcounter="https://aihm.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
